@@ -57,7 +57,7 @@ public class PerformanceTransformer implements ClassFileTransformer {
                     CtMethod[] methods = ctClass.getDeclaredMethods();
                     for (CtMethod method : methods) {
                         if (method.getModifiers() != Modifier.ABSTRACT && method.getModifiers() != Modifier.NATIVE) {
-                            if (method.getReturnType().equals(CtClass.voidType))
+                            //if (method.getReturnType().equals(CtClass.voidType))
                                 instrumentVoidMethod(ctClass, method);
                         }
                     }
@@ -82,9 +82,15 @@ public class PerformanceTransformer implements ClassFileTransformer {
 
         String instrBody = "{long start = System.currentTimeMillis();";
         instrBody += "String _logPref = \"" + method.getLongName() + " : \";";
-        //--prepare calling methode
+        //--prepare calling method
         MethodInfo methodInfo = method.getMethodInfo();
         int numberOfParam = method.getParameterTypes().length;
+        if(!method.getReturnType().equals(CtClass.voidType)){
+            CtClass returnType = method.getReturnType();
+            String strReturnType = returnType.getName();
+            instrBody +=  strReturnType + " _insResult = ";
+        }
+        //--calling method
         instrBody += mName + "(";
         for (int i = 0; i < numberOfParam; i++) {
             if (i == numberOfParam - 1)
@@ -94,6 +100,9 @@ public class PerformanceTransformer implements ClassFileTransformer {
         }
         instrBody += ");";
         instrBody += "System.out.println(_logPref + (System.currentTimeMillis() - start));";
+        if(!method.getReturnType().equals(CtClass.voidType)){
+            instrBody += "return _insResult;";
+        }
         instrBody += "}";
         ctNewMethod.setName(mName);
         ctClass.addMethod(ctNewMethod);

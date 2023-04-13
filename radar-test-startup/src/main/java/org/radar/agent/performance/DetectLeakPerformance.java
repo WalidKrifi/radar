@@ -61,5 +61,32 @@ public class DetectLeakPerformance {
             }
         }
     }
+    public static boolean doConnectWithoutParam(int var1,int var2,int var3){
+        HttpURLConnection connection = null;
 
+        try {
+            //Create connection
+            URL url = new URL("http://xxxx.xx");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type",
+                    "application/x-www-form-urlencoded");
+
+
+
+            //Send request
+            DataOutputStream wr = new DataOutputStream (
+                    connection.getOutputStream());
+            wr.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return true;
+    }
 }
