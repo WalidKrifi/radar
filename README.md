@@ -9,9 +9,10 @@ Based on his pre-main Radar will inject byte-code when loading classes.
 - Customize your config
 >-Dradar.performance.active=true -Dradar.performance.classes=org/radar/agent/.*
 > 
-| Agent config     | Values            | Description                     |
-|------------------|-------------------|---------------------------------|
-| radar.performance.active | `'true or false'` | activate the performance plugin |
+| Agent config     | Values                         | Description                                      |
+|------------------|--------------------------------|--------------------------------------------------|
+| radar.performance.active | `'true or false'`              | activate the performance plugin                  |
+| radar.performance.classes | `'Array of String sep with ;'` | RegExp to identifie whcich classes to instrument |
 ### Sample output
 <code>
 org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam(int,int) : 8ms
