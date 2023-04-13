@@ -99,7 +99,7 @@ public class PerformanceTransformer implements ClassFileTransformer {
                 instrBody += "$" + (i + 1) + ",";
         }
         instrBody += ");";
-        instrBody += "System.out.println(_logPref + (System.currentTimeMillis() - start));";
+        instrBody += "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");";
         if(!method.getReturnType().equals(CtClass.voidType)){
             instrBody += "return _insResult;";
         }
