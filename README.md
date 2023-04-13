@@ -1,4 +1,4 @@
-### Introdcution
+### Introduction
 Radar is a java agent, its objective is to instrument the code to report execution metrics.
 Based on his pre-main Radar will inject byte-code when loading classes.
 
