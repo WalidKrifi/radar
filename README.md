@@ -5,7 +5,7 @@ Based on his pre-main Radar will inject byte-code when loading classes.
 ### Getting started
 - Build Radar locally with maven :
 > mvn clean install
-- Instrument your JVM by adding the java agent to your java command
+- Instrument your JVM by adding the agent to your java command
 > -javaagent:/[CUSTOM_PATH]/radar/radar-agent/target/radar-agent-[version]-jar-with-dependencies.jar
 - Customize your config
 > -Dradar.performance.active=true -Dradar.performance.classes=org/radar/agent/.*
