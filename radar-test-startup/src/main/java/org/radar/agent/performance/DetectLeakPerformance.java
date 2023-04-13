@@ -1,4 +1,4 @@
-package com.t2a.test.performance;
+package org.radar.agent.performance;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -39,7 +39,7 @@ public class DetectLeakPerformance {
 
         try {
             //Create connection
-            URL url = new URL("http://xxxx");
+            URL url = new URL("http://xxxx.xx");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type",

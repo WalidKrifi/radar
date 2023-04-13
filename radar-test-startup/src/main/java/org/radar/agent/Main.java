@@ -1,6 +1,6 @@
-package com.t2a.test;
+package org.radar.agent;
 
-import com.t2a.test.performance.DetectLeakPerformance;
+import org.radar.agent.performance.DetectLeakPerformance;
 
 public class Main {
     public static void main(String[] args) {

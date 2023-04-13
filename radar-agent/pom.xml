@@ -39,7 +39,7 @@
                             </addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Premain-Class>com.t2a.test.MonitorPerformanceAgent</Premain-Class>
+                            <Premain-Class>org.radar.agent.MonitorPerformanceAgent</Premain-Class>
                             <Can-Redefine-Classes>false</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>
