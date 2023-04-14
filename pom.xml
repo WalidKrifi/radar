@@ -11,7 +11,7 @@
 		<module>radar-test-startup</module>
 	</modules>
 	<name>agent</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Java Agent to monitor java classes</description>
 
 
 
