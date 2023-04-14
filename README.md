@@ -1,6 +1,6 @@
 ### Introduction
 Radar is a lightweight java agent with objective is to instrument the code to report execution metrics.
-
+The project is always under building and many features ar coming soon.
 ### Getting started
 - Build Radar locally with maven :
 > mvn clean install
