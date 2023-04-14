@@ -80,8 +80,11 @@ public class PerformanceTransformer implements ClassFileTransformer {
         String mName = method.getName();
         mName += "Instr";
 
-        String instrBody = "{long start = System.currentTimeMillis();";
-        instrBody += "String _logPref = \"" + method.getLongName() + " : \";";
+        String instrBody = "{ " +
+                    "long start = System.currentTimeMillis();" +
+                    "String _logPref = \"" + method.getLongName() + " : \";"+
+                    "try{" ;
+
         //--prepare calling method
         MethodInfo methodInfo = method.getMethodInfo();
         int numberOfParam = method.getParameterTypes().length;
@@ -99,10 +102,18 @@ public class PerformanceTransformer implements ClassFileTransformer {
                 instrBody += "$" + (i + 1) + ",";
         }
         instrBody += ");";
-        instrBody += "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");";
+
         if(!method.getReturnType().equals(CtClass.voidType)){
             instrBody += "return _insResult;";
         }
+        instrBody += "}";
+
+        instrBody += "catch(Throwable _th){";
+            instrBody += "throw _th;";
+        instrBody += "}";
+        instrBody += "finally{ " +
+                             "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");" +
+                        "}";
         instrBody += "}";
         ctNewMethod.setName(mName);
         ctClass.addMethod(ctNewMethod);
