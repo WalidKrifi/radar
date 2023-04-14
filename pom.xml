@@ -9,6 +9,7 @@
 	<modules>
 		<module>radar-agent</module>
 		<module>radar-test-startup</module>
+		<module>radar-test-web</module>
 	</modules>
 	<name>agent</name>
 	<description>Demo project for Spring Boot</description>

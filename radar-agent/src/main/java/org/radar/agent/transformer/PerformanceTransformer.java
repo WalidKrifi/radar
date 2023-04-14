@@ -49,7 +49,7 @@ public class PerformanceTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
 
         //Add instrumentation to class
-        if (!className.startsWith("java") && !className.startsWith("com/intellij") && !className.startsWith("jdk") && !className.startsWith("sun/nio")) {
+        //if (!className.startsWith("java") && !className.startsWith("com/intellij") && !className.startsWith("jdk") && !className.startsWith("sun/nio")) {
             if (match(className)) {
                 try {
                     ClassPool classPool = ClassPool.getDefault();
@@ -59,6 +59,7 @@ public class PerformanceTransformer implements ClassFileTransformer {
                         if (method.getModifiers() != Modifier.ABSTRACT && method.getModifiers() != Modifier.NATIVE) {
                             //if (method.getReturnType().equals(CtClass.voidType))
                                 instrumentVoidMethod(ctClass, method);
+                            System.out.println( className +" instrumented");
                         }
                     }
                     byteCode = ctClass.toBytecode();
@@ -68,7 +69,7 @@ public class PerformanceTransformer implements ClassFileTransformer {
                     ex.printStackTrace();
                 }
             }
-        }
+       // }
         return byteCode;
     }
 
