@@ -16,8 +16,8 @@ Radar is a lightweight java agent with objective is to instrument the code to re
 
 ### Sample output
 <code>
-org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam(int,int) : 8ms
-org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam(int,int,int) : 1ms
-org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam() : 0ms
-org.radar.agent.Main.main(java.lang.String[]) : 14ms
+    org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam(int,int) : 8ms
+    org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam(int,int,int) : 1ms
+    org.radar.agent.performance.DetectLeakPerformance.doConnectWithoutParam() : 0ms
+    org.radar.agent.Main.main(java.lang.String[]) : 14ms
 </code>

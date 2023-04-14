@@ -39,7 +39,7 @@
                             </addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Premain-Class>org.radar.agent.MonitorPerformanceAgent</Premain-Class>
+                            <Premain-Class>org.radar.agent.Agent</Premain-Class>
                             <Can-Redefine-Classes>false</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>
@@ -48,12 +48,9 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <!-- this is used for inheritance merges -->
                         <phase>package</phase>
-                        <!-- append to the packaging phase. -->
                         <goals>
                             <goal>single</goal>
-                            <!-- goals == mojos -->
                         </goals>
                     </execution>
                 </executions>

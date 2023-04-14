@@ -4,7 +4,7 @@ import org.radar.agent.transformer.PerformanceTransformer;
 
 import java.lang.instrument.Instrumentation;
 
-public class MonitorPerformanceAgent {
+public class Agent {
     public static void premain(String agentArgs, Instrumentation inst) {
         System.out.println("--------------------------------------------------------------------");
         System.out.println("-----------------Starting Radar Instrumentation---------------------");
