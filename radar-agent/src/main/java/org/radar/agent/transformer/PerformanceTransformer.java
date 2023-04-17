@@ -19,12 +19,16 @@ import java.util.regex.Pattern;
  */
 public class PerformanceTransformer implements ClassFileTransformer {
     private static final String CLASS_TO_TRANSFORM = "radar.performance.classes";
+    private static final String CLASS_TO_EXCLUDES = "radar.performance.excludes";
     public static final String PERFORMANCE_ACTIVE = "radar.performance.active";
 
     List<Pattern> classToInstrument = new ArrayList<Pattern>();
+    List<Pattern> classToExclude = new ArrayList<Pattern>();
 
     public PerformanceTransformer() {
         String classToInstrument = System.getProperty(CLASS_TO_TRANSFORM);
+        String classToExcludes = System.getProperty(CLASS_TO_EXCLUDES);
+
         if (classToInstrument != null) {
             String[] arrPattern = classToInstrument.split(";");
             for (String strPattern : arrPattern) {
@@ -32,11 +36,35 @@ public class PerformanceTransformer implements ClassFileTransformer {
                 this.classToInstrument.add(pattern);
             }
         }
+
+        if (classToExcludes != null) {
+            String[] arrPattern = classToExcludes.split(";");
+            for (String strPattern : arrPattern) {
+                Pattern pattern = Pattern.compile(strPattern);
+                this.classToExclude.add(pattern);
+            }
+        }
     }
 
     private boolean match(String className) {
         boolean match = false;
+        if (classToInstrument == null || classToInstrument.size() == 0) {
+            return true;
+        }
         for (Pattern pattern : classToInstrument) {
+            match = pattern.matcher(className).matches();
+            if (match)
+                return true;
+        }
+        return false;
+    }
+
+    private boolean exluded(String className) {
+        boolean match = false;
+        if (classToExclude == null || classToExclude.size() == 0) {
+            return true;
+        }
+        for (Pattern pattern : classToExclude) {
             match = pattern.matcher(className).matches();
             if (match)
                 return true;
@@ -49,27 +77,27 @@ public class PerformanceTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
 
         //Add instrumentation to class
-        //if (!className.startsWith("java") && !className.startsWith("com/intellij") && !className.startsWith("jdk") && !className.startsWith("sun/nio")) {
-            if (match(className)) {
-                try {
-                    ClassPool classPool = ClassPool.getDefault();
-                    CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classfileBuffer));
-                    CtMethod[] methods = ctClass.getDeclaredMethods();
-                    for (CtMethod method : methods) {
-                        if (method.getModifiers() != Modifier.ABSTRACT && method.getModifiers() != Modifier.NATIVE) {
-                            //if (method.getReturnType().equals(CtClass.voidType))
-                                instrumentVoidMethod(ctClass, method);
-                            System.out.println( className +" instrumented");
-                        }
+        try {
+
+            ClassPool classPool = ClassPool.getDefault();
+            CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classfileBuffer));
+            if (match(className) && !ctClass.isAnnotation() && !ctClass.isEnum() && !ctClass.isInterface() && !exluded(className)) {
+
+                CtMethod[] methods = ctClass.getDeclaredMethods();
+                for (CtMethod method : methods) {
+                    if (method.getModifiers() != Modifier.ABSTRACT && method.getModifiers() != Modifier.NATIVE) {
+                        instrumentVoidMethod(ctClass, method);
+                        System.out.println(className + " instrumented");
                     }
-                    byteCode = ctClass.toBytecode();
-                    ctClass.detach();
-                } catch (Throwable ex) {
-                    System.out.println("Exception to instrument : " + className);
-                    ex.printStackTrace();
                 }
+                byteCode = ctClass.toBytecode();
+                ctClass.detach();
             }
-       // }
+        } catch (Throwable ex) {
+            System.out.println("Exception to instrument : " + className);
+            ex.printStackTrace();
+        }
+        // }
         return byteCode;
     }
 
@@ -82,17 +110,17 @@ public class PerformanceTransformer implements ClassFileTransformer {
         mName += "Instr";
 
         String instrBody = "{ " +
-                    "long start = System.currentTimeMillis();" +
-                    "String _logPref = \"" + method.getLongName() + " : \";"+
-                    "try{" ;
+                "long start = System.currentTimeMillis();" +
+                "String _logPref = \"" + Thread.currentThread().getName()+":" + method.getLongName() + " : \";" +
+                "try{";
 
         //--prepare calling method
         MethodInfo methodInfo = method.getMethodInfo();
         int numberOfParam = method.getParameterTypes().length;
-        if(!method.getReturnType().equals(CtClass.voidType)){
+        if (!method.getReturnType().equals(CtClass.voidType)) {
             CtClass returnType = method.getReturnType();
             String strReturnType = returnType.getName();
-            instrBody +=  strReturnType + " _insResult = ";
+            instrBody += strReturnType + " _insResult = ";
         }
         //--calling method
         instrBody += mName + "(";
@@ -104,17 +132,17 @@ public class PerformanceTransformer implements ClassFileTransformer {
         }
         instrBody += ");";
 
-        if(!method.getReturnType().equals(CtClass.voidType)){
+        if (!method.getReturnType().equals(CtClass.voidType)) {
             instrBody += "return _insResult;";
         }
         instrBody += "}";
 
         instrBody += "catch(Throwable _th){";
-            instrBody += "throw _th;";
+        instrBody += "throw _th;";
         instrBody += "}";
         instrBody += "finally{ " +
-                             "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");" +
-                        "}";
+                "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");" +
+                "}";
         instrBody += "}";
         ctNewMethod.setName(mName);
         ctClass.addMethod(ctNewMethod);

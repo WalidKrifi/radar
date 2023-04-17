@@ -7,12 +7,13 @@ The project is always under building and many features ar coming soon.
 - Instrument your JVM by adding the agent to your java command
 > -javaagent:/[CUSTOM_PATH]/radar/radar-agent/target/radar-agent-[version]-jar-with-dependencies.jar
 - Customize your config
-> -Dradar.performance.active=true -Dradar.performance.classes=org/radar/agent/.*
+> -Dradar.performance.active=true -Dradar.performance.classes=org/radar/agent/.* -Dradar.performance.excludes=com/intellij/.*
 
-| Agent config              | Values                         | Description                                     |
-|---------------------------|--------------------------------|-------------------------------------------------|
-| radar.performance.active  | `'true or false'`              | activate the performance plugin                 |
-| radar.performance.classes | `'Array of String sep with ;'` | RegExp to identifie which classes to instrument |
+| Agent config              | Values                         | Description                                                       |
+|---------------------------|--------------------------------|-------------------------------------------------------------------|
+| radar.performance.active  | `'true or false'`              | activate the performance plugin                                   |
+| radar.performance.classes | `'Array of String sep with ;'` | RegExp to identifie which classes to instrument                   |
+| radar.performance.excludes | `'Array of String sep with ;'` | RegExp to identifie which classes to exclude from instrumentation |
 
 ### Sample output
 <code>
