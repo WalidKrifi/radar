@@ -17,7 +17,11 @@
             <artifactId>javassist</artifactId>
             <version>3.27.0-GA</version>
         </dependency>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>radar-tool</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

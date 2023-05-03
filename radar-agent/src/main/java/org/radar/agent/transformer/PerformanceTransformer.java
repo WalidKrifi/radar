@@ -10,7 +10,6 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 /**
  * Adding performance log for only :
  * - given  class
@@ -21,10 +20,9 @@ public class PerformanceTransformer implements ClassFileTransformer {
     private static final String CLASS_TO_TRANSFORM = "radar.performance.classes";
     private static final String CLASS_TO_EXCLUDES = "radar.performance.excludes";
     public static final String PERFORMANCE_ACTIVE = "radar.performance.active";
-
     List<Pattern> classToInstrument = new ArrayList<Pattern>();
     List<Pattern> classToExclude = new ArrayList<Pattern>();
-
+    boolean logManagerLoaded = false;
     public PerformanceTransformer() {
         String classToInstrument = System.getProperty(CLASS_TO_TRANSFORM);
         String classToExcludes = System.getProperty(CLASS_TO_EXCLUDES);
@@ -45,7 +43,6 @@ public class PerformanceTransformer implements ClassFileTransformer {
             }
         }
     }
-
     private boolean match(String className) {
         boolean match = false;
         if (classToInstrument == null || classToInstrument.size() == 0) {
@@ -78,8 +75,11 @@ public class PerformanceTransformer implements ClassFileTransformer {
 
         //Add instrumentation to class
         try {
-
             ClassPool classPool = ClassPool.getDefault();
+            if(!logManagerLoaded)
+                classPool.getClassLoader().loadClass("org.radar.agent.logging.LogManager");
+
+
             CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classfileBuffer));
             if (match(className) && !ctClass.isAnnotation() && !ctClass.isEnum() && !ctClass.isInterface() && !exluded(className)) {
 
@@ -111,8 +111,9 @@ public class PerformanceTransformer implements ClassFileTransformer {
 
         String instrBody = "{ " +
                 "long start = System.currentTimeMillis();" +
-                "String _logPref = \"" + Thread.currentThread().getName()+":" + method.getLongName() + " : \";" +
-                "try{";
+                "String _logPref = \"" + method.getLongName() + "\";" +
+                "try{ "+
+                " org.radar.agent.logging.LogManager.incrementDepth(); ";
 
         //--prepare calling method
         MethodInfo methodInfo = method.getMethodInfo();
@@ -135,13 +136,14 @@ public class PerformanceTransformer implements ClassFileTransformer {
         if (!method.getReturnType().equals(CtClass.voidType)) {
             instrBody += "return _insResult;";
         }
-        instrBody += "}";
+        instrBody += "} ";
 
         instrBody += "catch(Throwable _th){";
-        instrBody += "throw _th;";
+        instrBody += " _th.printStackTrace();";
+        instrBody += " throw _th;";
         instrBody += "}";
         instrBody += "finally{ " +
-                "System.out.println(_logPref + (System.currentTimeMillis() - start)+\"ms\");" +
+                " org.radar.agent.logging.LogManager.logPerformance(_logPref , (System.currentTimeMillis() - start));" +
                 "}";
         instrBody += "}";
         ctNewMethod.setName(mName);

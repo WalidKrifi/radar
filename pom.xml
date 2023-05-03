@@ -7,9 +7,10 @@
 	<packaging>pom</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<modules>
+		<module>radar-tool</module>
 		<module>radar-agent</module>
 		<module>radar-test-startup</module>
-	</modules>
+    </modules>
 	<name>agent</name>
 	<description>Java Agent to monitor java classes</description>
 

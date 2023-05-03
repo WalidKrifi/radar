@@ -16,7 +16,7 @@ public class DetectLeakPerformance {
             connection.setRequestProperty("Content-Type",
                     "application/x-www-form-urlencoded");
 
-
+            org.radar.agent.logging.LogManager.incrementDepth();
 
             //Send request
             DataOutputStream wr = new DataOutputStream (
@@ -34,7 +34,7 @@ public class DetectLeakPerformance {
     }
 
 
-    public static void doConnectWithoutParam(int var1,int var2){
+    public static void doConnectWith2Param(int var1,int var2){
         HttpURLConnection connection = null;
 
         try {
@@ -61,7 +61,7 @@ public class DetectLeakPerformance {
             }
         }
     }
-    public static boolean doConnectWithoutParam(int var1,int var2,int var3){
+    public static boolean doConnectWith3Param(int var1,int var2,int var3){
         HttpURLConnection connection = null;
 
         try {
